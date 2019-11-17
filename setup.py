@@ -2,15 +2,14 @@
 
 from setuptools import setup, find_packages
 
-setup(name='research_seed',
-      version='0.0.1',
-      description='Describe Your Cool Project',
-      author='',
-      author_email='',
-      url='https://github.com/williamFalcon/pytorch-lightning-conference-seed',  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
-      install_requires=[
+setup(
+    name='par',
+    version='0.0.1',
+    description='Pedestrian attribute recognition.',
+    author='Xing Zhao LEE',
+    url='https://github.com/xingzhaolee/pedestrian-attribute-recognition',
+    install_requires=[
             'pytorch-lightning'
-      ],
-      packages=find_packages()
-      )
-
+    ],
+    packages=find_packages()
+)
