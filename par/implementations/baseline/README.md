@@ -34,7 +34,7 @@ wide_resnet50_2, wide_resnet101_2`
 ### How to run
 Below shows the example on how to run a ResNet50 baseline model on single and multiple GPU.
 
-```python
+```bash
 # Single GPU
 python par/implementations/baseline/trainer.py --use_16bit \
     -data_dir PATH_TO_PETA \
