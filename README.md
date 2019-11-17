@@ -1,72 +1,51 @@
-### pytorch-lightning-conference-seed
-Use this seed to refactor your PyTorch research code for:  
-- a paper submission  
-- a new research project.     
+# Pedestrian Attribute Recognition
 
-[Read the usage instructions here](https://github.com/williamFalcon/pytorch-lightning-conference-seed/blob/master/HOWTO.md)
-
-#### Goals  
-The goal of this seed is to structure ML paper-code the same so that work can easily be extended and replicated.   
-
-###### DELETE EVERYTHING ABOVE FOR YOUR PROJECT   
----   
-<div align="center">    
- 
-# Your Project Name     
-
-[![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
-[![Conference](http://img.shields.io/badge/NeurIPS-2019-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)
-[![Conference](http://img.shields.io/badge/ICLR-2019-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)
-[![Conference](http://img.shields.io/badge/AnyConference-year-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)  
-<!--
-ARXIV   
-[![Paper](http://img.shields.io/badge/arxiv-math.co:1480.1111-B31B1B.svg)](https://www.nature.com/articles/nature14539)
--->
-
-
-
-<!--  
-Conference   
--->   
-</div>
- 
 ## Description   
-What it does   
+A baseline for pedestrian attribute recognition aimed at reproducibility using [PyTorch Lightning](https://github.com/williamFalcon/pytorch-lightning). The experiments in this repo can be easily reproduced (seeded) and extended. This repo is tested only on PyTorch 1.3.1 and torchvision 0.4.2, but any version after 1.1.0 should work fine.
 
-## How to run   
+## How to run
 First, install dependencies   
 ```bash
-# clone project   
-git clone https://github.com/YourGithubName/Your-project-name   
+# Clone project   
+git clone https://github.com/xingzhaolee/pedestrian-attribute-recognition
 
-# install project   
-cd Your-project-name 
+# Install project   
+cd pedestrian-attribute-recognition
 pip install -e .   
 pip install -r requirements.txt
  ```   
- Next, navigate to [Your Main Contribution (MNIST here)] and run it.   
- ```bash
-# module folder
-cd research_seed/mnist/   
 
-# run module (example: mnist as your main contribution)   
-python mnist_trainer.py    
+Next, generate the training and testing list.
+```bash
+# PETA
+python scripts/preprocess/peta.py PATH_TO_PETA
+
+# RAP
+python scripts/preprocess/rap.py PATH_TO_RAP
 ```
 
-## Main Contribution      
-List your modules here. Each module contains all code for a full system including how to run instructions.   
-- [MNIST](https://github.com/williamFalcon/pytorch-lightning-conference-seed/tree/master/research_seed/mnist)  
+Next, navigate to the chosen implementation in `par/implementations/` and run it. Refer to the `README.md` in the respective folder for more detailed explanations.
+```bash
+python par/implementations/CHOSEN_IMPLEMENTATION/trainer.py
 
-## Baselines    
-List your baselines here.   
-- [MNIST_baseline](https://github.com/williamFalcon/pytorch-lightning-conference-seed/tree/master/research_seed/baselines/mnist_baseline)  
-
-### Citation   
+# Tensorboard visualization
+tensorboard --logdir PATH_TO_OUTPUT_DIR
 ```
-@article{YourName,
-  title={Your Title},
-  author={Your team},
-  journal={Location},
-  year={Year}
-}
-```   
+
+## Implementations      
+- [Baseline](https://github.com/xingzhaolee/pedestrian-attribute-recognition/tree/master/implementations/baseline)
+
+
+## Folder Structure    
+- `par/` contains the research codes
+
+    - `implementations/` contains various implementations of different algorithm
+
+    - `common/` contains common modules such as backbone architecture, layers and etc. which is reused across all implementations
+
+- `scripts/` contains various useful scripts
+
+    - `preprocess/` contains preprocessing scripts for different dataset
+
+## Datasets
+Please refer to [this](https://github.com/dangweili/pedestrian-attribute-recognition-pytorch) repo of the original author on how to download the PETA and RAP dataset.
