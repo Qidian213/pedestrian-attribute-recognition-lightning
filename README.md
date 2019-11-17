@@ -33,7 +33,7 @@ tensorboard --logdir PATH_TO_OUTPUT_DIR
 ```
 
 ## Implementations      
-- [Baseline](https://github.com/xingzhaolee/pedestrian-attribute-recognition/tree/master/implementations/baseline)
+- [Baseline](https://github.com/xingzhaolee/pedestrian-attribute-recognition/tree/master/par/implementations/baseline)
 
 
 ## Folder Structure    
