@@ -48,4 +48,4 @@ tensorboard --logdir PATH_TO_OUTPUT_DIR
     - `preprocess/` contains preprocessing scripts for different dataset
 
 ## Datasets
-Please refer to [this](https://github.com/dangweili/pedestrian-attribute-recognition-pytorch) repo of the original author on how to download the PETA and RAP dataset.
+Please refer to [this](https://github.com/dangweili/pedestrian-attribute-recognition-pytorch) repo by dangweili on how to download the PETA and RAP dataset.
