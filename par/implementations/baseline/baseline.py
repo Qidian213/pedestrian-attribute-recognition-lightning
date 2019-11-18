@@ -12,10 +12,10 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
+from par.common import backbones
 from par.common.dataset.dataset import Dataset
 from par.common.metrics.example_based import example_based_metrics
 from par.common.metrics.label_based import compute_mean_accuracy
-from par.common import backbones
 
 
 class Baseline(LightningModule):
@@ -79,7 +79,7 @@ class Baseline(LightningModule):
 
         loss = self.criterion(outputs, y)
 
-        # in DP mode (default) make sure if result is scalar, there's another
+        # In DP mode (default) make sure if result is scalar, there's another
         # dim in the beginning
         if self.trainer.use_dp:
             loss = loss.unsqueeze(0)
