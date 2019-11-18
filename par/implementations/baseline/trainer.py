@@ -37,7 +37,8 @@ def main(hparams):
         gpus=hparams.gpus,
         fast_dev_run=hparams.fast_dev_run,
         max_nb_epochs=hparams.max_nb_epochs,
-        use_amp=hparams.use_16bit
+        distributed_backend='ddp' if hparams.gpus > 1 else None,
+        use_amp=hparams.use_16bit,
     )
 
     trainer.fit(model)

@@ -7,9 +7,10 @@ import numpy as np
 import pytorch_lightning as pl
 from pytorch_lightning.root_module.root_module import LightningModule
 import torch
-from torch import nn, optim
+from torch import optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
 import torchvision.transforms as transforms
 
 from par.common import backbones
@@ -32,9 +33,9 @@ class Baseline(LightningModule):
                 osp.join(self.hparams.data_dir, "dataset",
                          "positive_ratios.npy"))
             self.weight_pos = torch.from_numpy(
-                np.exp(1. - positive_ratios)).cuda().float()
+                np.exp(1. - positive_ratios)).float()
             self.weight_neg = torch.from_numpy(
-                np.exp(positive_ratios)).cuda().float()
+                np.exp(positive_ratios)).float()
 
     # ---------------------
     # MODEL SETUP
@@ -59,7 +60,11 @@ class Baseline(LightningModule):
 
     def criterion(self, outputs, labels):
         if self.hparams.weighted_loss:
-            weight = torch.where(labels == 1, self.weight_pos, self.weight_neg)
+            weight = torch.where(
+                labels.cpu() == 1, self.weight_pos, self.weight_neg)
+
+            if self.on_gpu:
+                weight = weight.cuda(outputs.device.index)
         else:
             weight = None
 
@@ -68,6 +73,8 @@ class Baseline(LightningModule):
         return loss
 
     def predict(self, outputs):
+        if self.on_gpu:
+            outputs = outputs.cuda(outputs.device.index)
         outputs = outputs.detach()
         predictions = (torch.sigmoid(outputs) > 0.5).cpu().numpy()
         return predictions
@@ -78,11 +85,6 @@ class Baseline(LightningModule):
         outputs = self.forward(x)
 
         loss = self.criterion(outputs, y)
-
-        # In DP mode (default) make sure if result is scalar, there's another
-        # dim in the beginning
-        if self.trainer.use_dp:
-            loss = loss.unsqueeze(0)
 
         predictions = self.predict(outputs)
         mA = compute_mean_accuracy(predictions, y.cpu().numpy()).mean()
@@ -104,11 +106,6 @@ class Baseline(LightningModule):
 
         predictions = self.predict(outputs)
 
-        # In DP mode (default) make sure if result is scalar, there's another
-        # dim in the beginning
-        if self.trainer.use_dp:
-            loss = loss.unsqueeze(0)
-
         output = OrderedDict({
             'loss': loss,
             'predictions': predictions,
@@ -123,10 +120,6 @@ class Baseline(LightningModule):
         labels = []
         for output in outputs:
             loss = output['loss']
-
-            # Reduce manually when using dp
-            if self.trainer.use_dp:
-                loss = torch.mean(loss)
             avg_loss += loss
 
             predictions.extend(output['predictions'])
@@ -173,9 +166,6 @@ class Baseline(LightningModule):
         return [optimizer], [scheduler]
 
     def __dataloader(self, train):
-        def _init_fn(worker_id):
-            np.random.seed(0)
-
         normalize = [transforms.ToTensor(),
                      transforms.Normalize(mean=(0.485, 0.456, 0.406),
                                           std=(0.229, 0.224, 0.225))]
@@ -196,9 +186,16 @@ class Baseline(LightningModule):
                           split='train' if train else 'test',
                           transform=transform)
 
+        # When using multi-node (ddp) we need to add the datasampler
+        if self.use_ddp:
+            sampler = DistributedSampler(dataset, shuffle=train)
+        else:
+            sampler = None
+
         loader = DataLoader(dataset=dataset,
                             batch_size=self.hparams.batch_size,
-                            shuffle=train,
+                            shuffle=train and sampler is None,
+                            sampler=sampler,
                             num_workers=self.hparams.num_workers,
                             pin_memory=True,
                             worker_init_fn=_init_fn)
@@ -230,3 +227,7 @@ class Baseline(LightningModule):
         parser.add_argument('--weighted_loss', action='store_true')
 
         return parser
+
+
+def _init_fn(worker_id):
+    np.random.seed(0)
