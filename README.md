@@ -1,7 +1,14 @@
 # Pedestrian Attribute Recognition
 
 ## Description   
-A baseline for pedestrian attribute recognition aimed at reproducibility using [PyTorch Lightning](https://github.com/williamFalcon/pytorch-lightning). The experiments in this repo can be easily reproduced (seeded) and extended. This repo is tested only on PyTorch 1.3.1 and torchvision 0.4.2, but any version after 1.1.0 should work fine.
+A baseline for pedestrian attribute recognition aimed at reproducibility using [PyTorch Lightning](https://github.com/williamFalcon/pytorch-lightning). The experiments in this repo can be easily reproduced (seeded) and extended.
+
+The experiments repo is carried out only on PyTorch 1.3.1 and torchvision 0.4.2, but any version after 1.1.0 should work fine.
+
+## Requirements
+- Python >= 3.7.5
+- PyTorch >= 1.3.1
+- torchvision >= 0.4.2
 
 ## How to run
 First, install dependencies   
