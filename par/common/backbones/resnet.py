@@ -63,8 +63,7 @@ def wide_resnet101_2(last_layer_stride=2, pretrained=True, **kwargs):
 def _resnet(arch, block, layers, last_layer_stride, pretrained, **kwargs):
     model = ResNet(block, layers, last_layer_stride, **kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch],
-                                              progress=True)
+        state_dict = load_state_dict_from_url(model_urls[arch], progress=True)
         load_state_dict(model, state_dict)
 
     return model, 512 * block.expansion

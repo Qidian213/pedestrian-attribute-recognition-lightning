@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
 from par.common import backbones
+from par.common.layers.classifier import make_classifier
 from par.common.dataset.dataset import Dataset
 from par.common.metrics.example_based import example_based_metrics
 from par.common.metrics.label_based import compute_mean_accuracy
@@ -42,9 +43,8 @@ class Baseline(LightningModule):
         self.backbone, feature_size = \
             getattr(backbones, self.hparams.backbone)()
 
-        self.classifier = nn.Linear(feature_size, self.hparams.num_classes)
-        nn.init.normal_(self.classifier.weight, std=0.001)
-        nn.init.constant_(self.classifier.bias, 0.0)
+        self.classifier = make_classifier(
+            self.hparams.backbone, feature_size, self.hparams.num_classes)
 
     # ---------------------
     # TRAINING
