@@ -7,7 +7,7 @@ setup(
     version='0.0.1',
     description='Pedestrian attribute recognition.',
     author='Xing Zhao LEE',
-    url='https://github.com/xingzhaolee/pedestrian-attribute-recognition',
+    url='https://github.com/xingzhaolee/pedestrian-attribute-recognition-lightning',
     install_requires=[
             'pytorch-lightning'
     ],
